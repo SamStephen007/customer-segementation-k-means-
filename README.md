@@ -90,6 +90,10 @@ customer-segmentation/
 Add images from your `Images/` folder here:
 
 ![Cluster Plot](Images/Figure_1.png)
+![Cluster Plot](Images/image.png)
+![Cluster Plot](Images/image-1.png)
+![Cluster Plot](Images/image-2.png)
+
 
 ---
 
