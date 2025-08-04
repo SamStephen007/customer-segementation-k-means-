@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Segmentation Analysis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4cc9f0;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f7fa;
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .subtitle {
+            color: #6c757d;
+            font-weight: 300;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--dark-color);
+        }
+        
+        input[type="number"] {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        input[type="number"]:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 6px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            text-align: center;
+        }
+        
+        .btn:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+        
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+        
+        .result-title {
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        
+        .result-value {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .cluster-0 { color: #2ecc71; } /* Premium Customer */
+        .cluster-1 { color: #e74c3c; } /* Budget-Conscious */
+        .cluster-2 { color: #f39c12; } /* Needs Engagement */
+        .cluster-3 { color: #9b59b6; } /* Likely to Churn */
+        
+        .segment-info {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-top: 1rem;
+        }
+        
+        .segment-info p {
+            margin-bottom: 0.5rem;
+        }
+        
+        .segment-info strong {
+            color: var(--primary-color);
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 2rem;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Customer Segmentation Analysis</h1>
+            <p class="subtitle">Predict customer clusters based on income and spending patterns</p>
+        </header>
+        
+        <div class="card">
+            <h2>Customer Details</h2>
+            <p>Enter customer information to predict their segment</p>
+            
+            <form method="POST" action="/predict">
+                <div class="form-group">
+                    <label for="income">Annual Income (k$)</label>
+                    <input type="number" id="income" name="income" step="0.1" min="0" placeholder="e.g. 60.5" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="score">Spending Score (1-100)</label>
+                    <input type="number" id="score" name="score" step="0.1" min="1" max="100" placeholder="e.g. 70.0" required>
+                </div>
+                
+                <button type="submit" class="btn btn-block">Predict Customer Segment</button>
+            </form>
+        </div>
+        
+        {% if prediction_text %}
+        <div class="card">
+            <h2>Segmentation Result</h2>
+            <div class="result-title">Predicted Customer Segment:</div>
+            <div class="result-value 
+                {% if 'Premium' in prediction_text %}cluster-0
+                {% elif 'Budget' in prediction_text %}cluster-1
+                {% elif 'Engagement' in prediction_text %}cluster-2
+                {% elif 'Churn' in prediction_text %}cluster-3
+                {% endif %}">
+                {{ prediction_text.split(":")[1] if ":" in prediction_text else prediction_text }}
+            </div>
+            
+            <div class="segment-info">
+                {% if 'Premium' in prediction_text %}
+                    <p>This customer has high income and high spending. They are your most valuable customers.</p>
+                    <p><strong>Recommendation:</strong> Offer premium products, loyalty rewards, and personalized services.</p>
+                {% elif 'Budget' in prediction_text %}
+                    <p>This customer has low income and low spending. They are price-sensitive shoppers.</p>
+                    <p><strong>Recommendation:</strong> Target with value deals, discounts, and budget-friendly options.</p>
+                {% elif 'Engagement' in prediction_text %}
+                    <p>This customer has high income but low spending. They may need more engagement.</p>
+                    <p><strong>Recommendation:</strong> Focus on building relationship, understanding needs, and targeted marketing.</p>
+                {% elif 'Churn' in prediction_text %}
+                    <p>This customer has low income but high spending. They may be at risk of churning.</p>
+                    <p><strong>Recommendation:</strong> Investigate reasons for high spending, offer retention incentives.</p>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+        
+        <footer>
+            <p>Customer Segmentation Tool &copy; 2023 | Powered by K-Means Clustering</p>
+        </footer>
+    </div>
+</body>
+</html>
