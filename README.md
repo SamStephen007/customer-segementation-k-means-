@@ -111,5 +111,5 @@ Add images from your `Images/` folder here:
 ## 📬 Contact
 
 **Sam Stephen**  
-📧 YourEmail@example.com  
+📧 stephensam0770@example.com  
 🌐 [https://github.com/SamStephen007](https://github.com/SamStephen007)
